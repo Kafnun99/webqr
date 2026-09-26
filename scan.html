@@ -35,45 +35,32 @@
     </div>
 
     <script>
-    // 1. Ambil Parameter 'id' dari URL (Contoh: A000001)
-    const urlParams = new URLSearchParams(window.location.search);
-    const qrId = urlParams.get('id') || 'UNKNOWN';
+  // 1. Ambil ID dari URL (?id=A000001)
+  const urlParams = new URLSearchParams(window.location.search);
+  const qrId = urlParams.get('id') || 'UNKNOWN';
 
-    // 2. URL Apps Script Log Scan Anda (Ganti dengan URL Deployment Apps Script Anda)
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzt5YebnDebPGdS9iGHkzKpaSuaHuMfIeA1arEXKzxLeoQ3WSbknXLQsoXHPfp_xh00cQ/exec";
+  // 2. MASUKKAN WEB APP URL DARI APPSCRIPT LOG SCAN ANDA DI SINI:
+  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbx.../exec";
 
-    // 3. Fallback URL jika ID tidak ditemukan / Belum Diaktivasi
-    let destinationUrl = "https://smart-qr-code-iota.vercel.app/"; 
-    // 4. Deteksi Tipe Perangkat
-    const ua = navigator.userAgent;
-    const device = /iPhone|iPad|iPod/i.test(ua) ? "iOS" : (/Android/i.test(ua) ? "Android" : "Desktop");
-
-    // 5. Tangkap Lokasi via GeoIP (ipapi.co) & Kirim Log
-    fetch('https://ipapi.co/json/')
-        .then(res => res.json())
-        .then(geo => {
-            const payload = {
-                waktu: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-                qr_id: qrId,
-                kota: geo.city || "Tidak Terdeteksi",
-                perangkat: device,
-                ip: geo.ip || ""
-            };
-
-            // Kirim data scan ke Google Sheets Log Scan (Akun B) secara asynchronous
-            return fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-        })
-        .catch(err => console.error("Error logging scan:", err))
-        .finally(() => {
-            // 6. Redirect Pengunjung ke URL Tujuan Klien
-            // (Catatan: Untuk MVP, destinationUrl bisa diarahkan sesuai logika aktivasi Anda)
-            window.location.href = destinationUrl;
-        });
-    </script>
+  // 3. Kirim data ke Google Sheets Log Scan secara background
+  if (qrId !== 'UNKNOWN') {
+    fetch(SCRIPT_LOG_SCAN, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        waktu: new Date().toISOString(),
+        qr_id: qrId,
+        kota: "Indonesia", // atau panggil IP API jika ada
+        perangkat: navigator.userAgent,
+        ip: "-"
+      })
+    })
+    .then(() => {
+      console.log("Log scan berhasil dikirim!");
+    })
+    .catch(err => console.error("Gagal kirim log:", err));
+  }
+</script>
 </body>
 </html>

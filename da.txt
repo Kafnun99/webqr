@@ -30,3 +30,96 @@ tapi sebelumnya apakah ketika saya pake pendekatan kedua, akan merubah struktur 
 
 --
 Saya perlu klarifikasi dulu biar ga ada miss, karena sebelumnya kita sudah buat file database lead, apakah sheet log scan masih berada di file yg sama dengan database tadi atau memang file yg terpisah?
+
+--
+Wah sory sebelumnya memang tadi keputus. sekarang semua nya sudah saya eksekusi, sudah ada dua file, leads dan scan, untuk interactiv visual nya sudah saya buat juga dan sungguh saya senang sekali.
+namun mari kita bedah lagi, karena ada satu ganjalan dalam fikiran saya.
+
+Saya punya produk smartqr code dengan form aktivasi pada project sebelumnya dan terpisah, dan sekarang dengan bantuan kamu saya sudah buat web untuk informasi terkait produk saya.
+
+nah ketika ada yang tertarik, kemudian mengisi form tersebut, trus dia cekout, maka saya kirim barcode dan url form aktivasi nya lewat wa. lalu bagaimana cara nya dia bisa melihat trackingan barcode tersebut? yang terpisah antara satu dan lain nya?
+
+--
+Wahh makin semagat nih, oke saya jelaskan dulu secara detail kondisi yang ada
+Smart code saya buat di project dengan folder QR maps
+struktur nya : - QR maps
+		- Vercel
+		- node_modules
+		- Public
+		       - activate.html
+		- Qr Codes
+		- .env.local
+		- .gitignore
+		- cards_export.csv
+		- generate_card.js
+		- generate_card.images.js
+		- package-lock.json
+		- server.js
+		- vercel.json
+WEB smart code saya buat di project dengan folder web QR
+		- index.html
+		- scan.html
+
+Selain itu akun spreadsheet untuk db nya beda akun, QR Maps akun A, sedangkan Web QR akun beda, dan rencana gthub atau vercel nya pun berbeda menyesuaikan dengan akun db nya masing masing.
+
+nah dengan struktur dan perbedaan folder seperti ini, bagaimana kamu melihatnya? apa solusi terbaiknya.
+
+Apakah kita bisa langsung eksekusi cara ke 2, atau kita melakukan penyesuaian terlebih dahulu? saya akan ikut rekomendasimu
+
+--
+oke saya paham dengan alurnya, saya pun sudah ga siap nih untuk deploy ke vercel, namun bantu saya step by step nya dulu untuk penyesuaian,
+1. standarisasi format ID QR sudah unik yakni A000001-A999999
+2, Nah untuk alur pembacaan link nya saya belum paham penempatan nya
+3. penerapan cara ke 2 di looker studio pun saya masih blank
+
+--
+oke makkin menarik nih coding nya, sebelum ke tahap 3, saya perlu makesure ini
+1. scan html di akun B itu untuk membaca calon konsumen yang tertarik, sementara scan html yang baru kamu kasih untuk menghubungkan project B dengan generate images di akun A kan?
+2. dari point 1 tadi, apakah saya tinggal menimpa scan.html yang ada atau membuat file html berbeda contoh scanqr.html
+3. ketika scanqr sudah terhubung dengan project sebelumnya akun A, apakah perlu menghubungkan kembali form aktivasi yang berada d halaman activate.html dengan project akun B, atau untuk activate.html akan terhubung otomatis setelah scanqr terhubung dengan project a tadi?
+
+--
+sory sory, alasan yang membuat saya bertanya adalah di scan.html sebelumnya ada script ini:
+const DESTINATION_URL = "https://wa.me/6281234567890"; // URL Asli Klien
+
+Sedangkan di scan.html kedua tidak ada script ini.
+
+oke saya jalankan dulu ini, setelah itu saya akan lanjutkan ke tahap 3 untuk looker studio. btw makasih ya kamu sabar banget :-)
+
+--
+Duh sebentar ko jadi pusing ini, kalo mrngganti url di generateqr di project a, berarti harus di generate lagi dong barcode nya?
+
+jadi mending di manggil generateqr di scan.html atau scan.html di panggil di geneerateqr di project a?
+
+--
+saya udah deploy ke vercel untuk mendapatkan link url yang akan di taruh di generate card, akan tetapi lupa mengganti no wa di index.html project B, trus saya ganti dan save dan menjalankan perintah ini di terminal vs code PS D:\PROJECT\WebQR> echo "# webqr" >> README.md
+>> git init
+>> git add README.md
+>> git commit -m "ganti nomor"
+>> git branch -M main
+>> git remote add origin https://github.com/bikinkarya/webqr.git
+>> git push -u origin main
+Reinitialized existing Git repository in D:/PROJECT/WebQR/.git/
+[main c3d4b61] ganti nomor
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+error: remote origin already exists.
+remote: Permission to bikinkarya/webqr.git denied to Kafnun99.
+fatal: unable to access 'https://github.com/bikinkarya/webqr.git/': The requested URL returned error: 403
+
+hasilnya seperti itu, dan di web masih terbaca no wa default nya
+
+--
+saya sudah mengganti script di generate_card.js menjadi
+const qrUrl = `https://web-qr-anda.vercel.app/scan.html?id=${cardId}`;
+
+dan di scan html parameter pun sudah jadi seperti ini:
+// Script ini otomatis membaca ?id=A000001 dari URL browser
+const urlParams = new URLSearchParams(window.location.search);
+const qrId = urlParams.get('id') || 'UNKNOWN'; // Mengambil nilai A000001.
+
+nah sekarang kita lanjut ke tahap 3 looker studio,yang sudah kita bahas tadi
+
+---
+Sebenernya yang saya udah buat
+1. QRmaps (project 1) terdapat 1 db beranama database qr maps dengan app script
+2.webQR (project 2) terdapat 2 db bernama database leads smart qr dan log scan standar masing masing degan API nya
