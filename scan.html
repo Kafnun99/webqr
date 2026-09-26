@@ -44,23 +44,21 @@
 
   // 3. Kirim data ke Google Sheets Log Scan secara background
   if (qrId !== 'UNKNOWN') {
-    fetch(SCRIPT_LOG_SCAN, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        waktu: new Date().toISOString(),
-        qr_id: qrId,
-        kota: "Indonesia", // atau panggil IP API jika ada
-        perangkat: navigator.userAgent,
-        ip: "-"
-      })
+  // Gunakan navigator.sendBeacon atau fetch dengan text/plain
+  fetch(SCRIPT_LOG_SCAN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      waktu: new Date().toISOString(),
+      qr_id: qrId,
+      kota: "Indonesia",
+      perangkat: navigator.userAgent,
+      ip: "-"
     })
-    .then(() => {
-      console.log("Log scan berhasil dikirim!");
-    })
-    .catch(err => console.error("Gagal kirim log:", err));
-  }
+  })
+  .then(res => res.json())
+  .then(data => console.log("Response Log Scan:", data))
+  .catch(err => console.error("Gagal kirim log scan:", err));
 </script>
 </body>
 </html>
