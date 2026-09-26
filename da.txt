@@ -123,3 +123,21 @@ nah sekarang kita lanjut ke tahap 3 looker studio,yang sudah kita bahas tadi
 Sebenernya yang saya udah buat
 1. QRmaps (project 1) terdapat 1 db beranama database qr maps dengan app script
 2.webQR (project 2) terdapat 2 db bernama database leads smart qr dan log scan standar masing masing degan API nya
+
+--
+1. vercel sudah terkoneksi dengan github
+2. ketika menjalankan domain lewat vercel data belum update (masih menggunakan no default)
+3. Ketika mencoba buka index.html lewat live server data tersimpan dan no wa sudah update
+4. ada jeda waktu dari db leads dengan looker studio, ketika data masuk di db leads, tapi rekap di look studio tidak otomatis tersimpan
+5. mencoba melakukan scan barcode, dan aktivasi data tersimpan di db qr maps (project 1) namun data tidak tersimpan di data log scan
+
+--
+- Vercel sudah update dan terkoneksi, no wa pun sudah ganti
+kendala sekarang
+1. halaman vs code untuk index dan scan html berwarna kuning serta ada huruf M disampingnya
+2. scan barcode belum tersimpan di log scan, appascript sudah deploy, dan anyone serta execute me
+3. data di look studio untuk source scan invaalid dimension
+
+--
+Semua udah solved, tinggal penyimpanan data scan aja yang belum berhasil
+scan.html sudah saya buat sesuai instruksi terakhhir

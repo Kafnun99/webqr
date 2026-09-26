@@ -40,26 +40,32 @@
   const qrId = urlParams.get('id') || 'UNKNOWN';
 
   // 2. MASUKKAN WEB APP URL DARI APPSCRIPT LOG SCAN ANDA DI SINI:
-  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbx.../exec";
+  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbx.../exec"; // Ganti dengan URL Apps Script Log Scan asli Anda!
 
-  // 3. Kirim data ke Google Sheets Log Scan secara background
+  // 3. Fungsi untuk mengirim log scan
   if (qrId !== 'UNKNOWN') {
-  // Gunakan navigator.sendBeacon atau fetch dengan text/plain
-  fetch(SCRIPT_LOG_SCAN, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({
+    const payload = JSON.stringify({
       waktu: new Date().toISOString(),
       qr_id: qrId,
       kota: "Indonesia",
       perangkat: navigator.userAgent,
       ip: "-"
+    });
+
+    // Menggunakan fetch dengan mode no-cors dan text/plain agar tidak diblokir Google Apps Script
+    fetch(SCRIPT_LOG_SCAN, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: payload
     })
-  })
-  .then(res => res.json())
-  .then(data => console.log("Response Log Scan:", data))
-  .catch(err => console.error("Gagal kirim log scan:", err));
-}
+    .then(() => {
+      console.log("Log scan berhasil dikirim!");
+    })
+    .catch(err => console.error("Gagal mengirim log scan:", err));
+  }
 </script>
 </body>
 </html>

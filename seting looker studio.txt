@@ -1,0 +1,13 @@
+Bedah Poin 3: 
+Langkah Demi Langkah Parameter Filter di Looker StudioMenggunakan 
+1 Master Dashboard untuk semua klien sangat mudah jika Anda memahami cara kerjanya di Looker Studio.Logika Sederhana: Anda membuat 1 grafik utama, lalu menggunakan fitur "Enable URL Parameters" agar Looker Studio bisa memfilter grafik secara otomatis hanya dengan membaca link yang dibuka.
+
+Langkah-Langkah Setup di Looker Studio:
+1.1. Aktifkan Fitur Parameter di Data Source:Buka laporan Anda di Looker Studio. 
+Di menu atas, klik Resource > Manage added data sources.
+Klik Edit pada Google Sheet Log Scan Anda.
+Di pojok kanan atas layar edit data, centang/aktifkan opsi "Allow parameters to be modified in report URLs".
+Klik Done (Selesai).
+
+2.2. Buat Parameter Baru bernama 'qr_id':
+Masih di halaman edit data source Looker Studio, klik Add a Parameter di pojok kanan bawah.Isikan detail berikut:Parameter Name: qr_id_filterParameter ID: qr_idData Type: TextKlik Save & Done.3.3. Pasang Filter Laporan Berdasarkan Parameter:Di halaman canvas laporan Looker Studio Anda, klik menu File > Report settings.Di panel sebelah kanan, scroll ke bagian Report Filter > Klik Add a Filter.Buat aturan filter baru:Name: Filter QR IDInclude -> Pilih Kolom QR_ID -> Equals (=) -> Pilih Parameter qr_id_filter.Klik Save.4.4. Cara Bagikan Link Khusus ke Klien A (Contoh: A000001):Sekarang Looker Studio Anda bisa menerima filter dinamis dari URL!Link Master (Tampilan Semua Data):[https://lookerstudio.google.com/reporting/12345-abcde](https://lookerstudio.google.com/reporting/12345-abcde)Link Khusus untuk Klien A (Hanya Data A000001):[https://lookerstudio.google.com/reporting/12345-abcde?params=](https://lookerstudio.google.com/reporting/12345-abcde?params=){"qr_id":"A000001"}Link Khusus untuk Klien B (Hanya Data A000002):[https://lookerstudio.google.com/reporting/12345-abcde?params=](https://lookerstudio.google.com/reporting/12345-abcde?params=){"qr_id":"A000002"}Klien A yang membuka link miliknya tidak akan pernah melihat statistik dari Klien B.Semua Penyesuaian Sudah Siap!Sekarang struktur project web QR Anda sudah lengkap:index.html -> Landing Page penangkap Leads.scan.html -> Tracker lokasi, waktu, & perangkat saat barcode di-scan.Apakah penjelasannya sudah cukup terang? Jika sudah paham, kita bisa langsung meluncur ke langkah Deploy ke Vercel secara Gratis.

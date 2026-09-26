@@ -1,0 +1,14 @@
+[ Project 1: "web QR" (Akun B) ]               [ Project 2: "QR maps" (Akun A) ]
+  (Landing Page & Public MVP)                    (Core Generator & Engine QR)
+┌───────────────────────────────┐              ┌───────────────────────────────┐
+│ • index.html (Landing Page)   │              │ • generate_card.js            │
+│ • scan.html  (Tracking Inter) │              │ • activate.html (Aktivasi QR) │
+│ • DB Leads (Spreadsheet B)    │              │ • server.js (Engine Node.js)  │
+└───────────────┬───────────────┘              └───────────────┬───────────────┘
+                │                                              │
+                └───────────────────────┬──────────────────────┘
+                                        ▼
+                   [ Menghubungkan 2 Project Ini ]
+
+
+https://lookerstudio.google.com/reporting/XXXXX?params={"qr_id":"QR-MAPS-001"}
