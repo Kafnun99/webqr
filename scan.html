@@ -25,26 +25,24 @@
     }).catch(err => console.error("Gagal log scan:", err));
 
     // B. Cek Status Kartu ke Database QR Maps untuk Pengalihan
-    fetch(`${SCRIPT_DB_QR}?action=getCard&card_id=${qrId}`)
+    fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`)
       .then(res => res.json())
       .then(data => {
-        // Ambil link tujuan (bisa dari data.gmaps_url, data.link, atau data.destination)
-        const targetUrl = data.gmaps_url || data.link || data.url;
+        // Ambil link tujuan (di gambar Anda, link YouTube disimpan di field nama_toko / gmaps_url / no_hp)
+        const targetUrl = data.gmaps_url || data.nama_toko || data.link || data.no_hp;
 
-        if (data.status === 'success' && (data.card_status === 'active' || data.status_kartu === 'active') && targetUrl) {
-          // KARTU SUDAH AKTIF -> Langsung arahkan ke Link Google Maps / Tujuan Toko
+        // Jika status kartu AKTIF (baik bernama 'active' atau 'TERDAFTAR / AKTIF') dan link tujuan ada:
+        if ((data.card_status === 'active' || data.status === 'active' || data.status === 'TERDAFTAR / AKTIF') && targetUrl && targetUrl.startsWith('http')) {
+          // LANGSUNG LEMPAR KE LINK TUJUAN (YouTube/Google Maps)
           window.location.href = targetUrl;
         } else {
-          // KARTU BELUM AKTIF -> Arahkan ke Halaman Aktivasi
+          // JIKA BELUM AKTIF -> Lempar ke Halaman Aktivasi Form
           window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`; 
         }
       })
       .catch(err => {
         console.error("Error cek DB QR:", err);
-        // Fallback jika API bermasalah: Arahkan ke Halaman Aktivasi
+        // Fallback jika API error
         window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
       });
-  } else {
-    document.body.innerHTML = "<h2>ID Kartu tidak terdeteksi.</h2>";
-  }
 </script>
