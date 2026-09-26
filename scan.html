@@ -1,48 +1,85 @@
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const qrId = urlParams.get('id');
-
-  // 1. URL Apps Script Log Scan
-  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwbhh5YZZd7bl1vBRc7JP-iOPaCFzLztcJa9uG76p4FT3w0H4Xd_DB5gpYfUwyMehhXqw/exec"; 
-
-  // 2. URL Apps Script DB QR Maps (Cek status & link tujuan)
-  const SCRIPT_DB_QR = "https://script.google.com/macros/s/AKfycbymM3lEjniD30_XI8pC2uDtN1MYiCyNm39ARbp99rwkKKQ7N9G_4qGxiUZpZNygM3fJFU/exec";
-
-  if (qrId) {
-    // A. Kirim Log Scan secara asynchronous (Background)
-    const formData = new URLSearchParams();
-    formData.append('waktu', new Date().toLocaleString('id-ID'));
-    formData.append('qr_id', qrId);
-    formData.append('kota', 'Indonesia');
-    formData.append('perangkat', navigator.userAgent);
-    formData.append('ip', '-');
-
-    fetch(SCRIPT_LOG_SCAN, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData
-    }).catch(err => console.error("Gagal log scan:", err));
-
-    // B. Cek Status Kartu ke Database QR Maps untuk Pengalihan
-    fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`)
-      .then(res => res.json())
-      .then(data => {
-        // Ambil link tujuan (di gambar Anda, link YouTube disimpan di field nama_toko / gmaps_url / no_hp)
-        const targetUrl = data.gmaps_url || data.nama_toko || data.link || data.no_hp;
-
-        // Jika status kartu AKTIF (baik bernama 'active' atau 'TERDAFTAR / AKTIF') dan link tujuan ada:
-        if ((data.card_status === 'active' || data.status === 'active' || data.status === 'TERDAFTAR / AKTIF') && targetUrl && targetUrl.startsWith('http')) {
-          // LANGSUNG LEMPAR KE LINK TUJUAN (YouTube/Google Maps)
-          window.location.href = targetUrl;
-        } else {
-          // JIKA BELUM AKTIF -> Lempar ke Halaman Aktivasi Form
-          window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`; 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengarahkan...</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
         }
-      })
-      .catch(err => {
-        console.error("Error cek DB QR:", err);
-        // Fallback jika API error
-        window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
-      });
-</script>
+        .loader {
+            border: 3px solid #1e293b;
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="loader"></div>
+        <p>Mengarahkan Anda ke tujuan...</p>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const qrId = urlParams.get('id');
+
+      // 1. URL Apps Script Log Scan
+      const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwbhh5YZZd7bl1vBRc7JP-iOPaCFzLztcJa9uG76p4FT3w0H4Xd_DB5gpYfUwyMehhXqw/exec"; 
+
+      // 2. URL Apps Script DB QR Maps (Untuk cek status & link lokasi toko)
+      const SCRIPT_DB_QR = "https://script.google.com/macros/s/AKfycbyM3lEjniD3O_XI8pC2uDtN1MYiCyNm39ARbp99rwkKKQ7N9G_4qGxiUZpZNygNfJFU/exec"; // Ganti dengan Web App URL dari appscript db qr Anda!
+
+      if (qrId) {
+        // A. Kirim Log Scan secara asynchronous (Background)
+        const formData = new URLSearchParams();
+        formData.append('waktu', new Date().toLocaleString('id-ID'));
+        formData.append('qr_id', qrId);
+        formData.append('kota', 'Indonesia');
+        formData.append('perangkat', navigator.userAgent);
+        formData.append('ip', '-');
+
+        fetch(SCRIPT_LOG_SCAN, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData
+        }).catch(err => console.error("Gagal log scan:", err));
+
+        // B. Cek Status Kartu ke Database QR Maps untuk Pengalihan
+        fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'success' && data.card_status === 'active' && data.no_hp) {
+              // Kartu Aktif -> Alihkan ke Google Maps / Tujuan Toko
+              window.location.href = data.no_hp; // Atau sesuaikan dengan kolom link lokasi toko Anda
+            } else {
+              // Kartu Inactive / Belum Diaktifkan -> Alihkan ke halaman Aktivasi
+              window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`; 
+            }
+          })
+          .catch(err => {
+            console.error("Error cek DB QR:", err);
+            // Fallback jika API bermasalah: Arahkan ke Halaman Aktivasi
+            window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
+          });
+      } else {
+        document.body.innerHTML = "<h2>ID Kartu tidak terdeteksi.</h2>";
+      }
+    </script>
+</body>
+</html>
