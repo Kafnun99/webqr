@@ -38,15 +38,14 @@
       const urlParams = new URLSearchParams(window.location.search);
       const qrId = urlParams.get('id');
 
-      // 1. URL Apps Script Log Scan
+      // 1. URL Log Scan
       const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwbhh5YZZd7bl1vBRc7JP-iOPaCFzLztcJa9uG76p4FT3w0H4Xd_DB5gpYfUwyMehhXqw/exec"; 
-                              
-                             
-      // 2. URL Apps Script DB QR Maps
+
+      // 2. URL DB QR Maps
       const SCRIPT_DB_QR = "https://script.google.com/macros/s/AKfycbzUiP1q49KBQwbyypS_63TEpHILiCIhwzsjyBBVvPLsJhPInmQp-qs45pgqbIaozPLU/exec";
-                         
+
       if (qrId) {
-        // A. Kirim Log Scan secara asynchronous di latar belakang
+        // A. Kirim Log Scan ke Google Sheets (Background)
         const formData = new URLSearchParams();
         formData.append('waktu', new Date().toLocaleString('id-ID'));
         formData.append('qr_id', qrId);
@@ -61,27 +60,21 @@
           body: formData
         }).catch(err => console.error("Gagal log scan:", err));
 
-        // B. Cek Status DB QR Maps
-        fetch(`${SCRIPT_DB_QR}?action=getCard&card_id=${qrId}`)
+        // B. Cek Status Kartu ke Apps Script DB QR
+        fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`)
           .then(res => res.json())
-          .then(resData => {
-            console.log("Respon DB QR:", resData);
+          .then(data => {
+            console.log("Data diterima:", data);
 
-            // Ekstrak data (menangani jika respon dibungkus dalam resData.data atau langsung di resData)
-            const item = resData.data || resData.card || resData;
+            // BACA LANGSUNG PROPERTY DARI JSON APPS SCRIPT ANDA:
+            const cardStatus = data.card_status; // "active"
+            const targetUrl = data.nama_toko;   // "https://youtu.be/..."
 
-            // Cari URL tujuan dari berbagai kemungkinan nama atribut
-            const targetUrl = item.gmaps_url || item.nama_toko || item.link || item.no_hp || item.url || resData.gmaps_url || resData.nama_toko;
-
-            // Cari status aktif dari berbagai kemungkinan nama atribut
-            const statusKartu = String(item.status || item.card_status || resData.status || resData.card_status || '').toLowerCase();
-            const isAktif = statusKartu.includes('active') || statusKartu.includes('aktif') || statusKartu.includes('terdaftar');
-
-            // Jika status terdeteksi aktif dan URL tujuan berupa HTTP/HTTPS
-            if (isAktif && targetUrl && String(targetUrl).trim().startsWith('http')) {
-              window.location.href = String(targetUrl).trim();
+            if (cardStatus === 'active' && targetUrl && targetUrl.startsWith('http')) {
+              // KARTU AKTIF -> LANGSUNG DIALIKAN KE YOUTUBE / GOOGLE MAPS
+              window.location.href = targetUrl;
             } else {
-              // Jika belum aktif, arahkan ke form aktivasi
+              // KARTU BELUM AKTIF -> DIALIKAN KE FORM AKTIVASI
               window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
             }
           })
