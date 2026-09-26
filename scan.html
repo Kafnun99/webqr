@@ -1,71 +1,31 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mengarahkan...</title>
-    <style>
-        body {
-            background-color: #0f172a;
-            color: #ffffff;
-            font-family: system-ui, -apple-system, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .loader {
-            border: 3px solid #1e293b;
-            border-top: 3px solid #38bdf8;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 15px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-    <div>
-        <div class="loader"></div>
-        <p>Mengarahkan Anda ke tujuan...</p>
-    </div>
-
-    <script>
+<script>
   // 1. Ambil ID dari URL (?id=A000001)
   const urlParams = new URLSearchParams(window.location.search);
   const qrId = urlParams.get('id') || 'UNKNOWN';
 
-  // 2. MASUKKAN WEB APP URL DARI APPSCRIPT LOG SCAN ANDA DI SINI:
-  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwbhh5YZZd7bl1vBRc7JP-iOPaCFzLztcJa9uG76p4FT3w0H4Xd_DB5gpYfUwyMehhXqw/exec"; // Ganti dengan URL Apps Script Log Scan asli Anda!
+  // 2. MASUKKAN WEB APP URL BARU DARI STEP 1 DI SINI:
+  const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwk5_QHmeUcTHyZ-oq64i9xPE9xa_xj2YTwBn4ItRNKI3qVU1AhqBU6EJKyQBfM5jMSOw/exec"; 
 
-  // 3. Fungsi untuk mengirim log scan
+  // 3. Kirim log scan jika ID valid
   if (qrId !== 'UNKNOWN') {
-    const payload = JSON.stringify({
-      waktu: new Date().toISOString(),
-      qr_id: qrId,
-      kota: "Indonesia",
-      perangkat: navigator.userAgent,
-      ip: "-"
-    });
+    const formData = new URLSearchParams();
+    formData.append('waktu', new Date().toLocaleString('id-ID'));
+    formData.append('qr_id', qrId);
+    formData.append('kota', 'Indonesia');
+    formData.append('perangkat', navigator.userAgent);
+    formData.append('ip', '-');
 
-    // Menggunakan fetch dengan mode no-cors dan text/plain agar tidak diblokir Google Apps Script
     fetch(SCRIPT_LOG_SCAN, {
       method: 'POST',
       mode: 'no-cors',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: payload
+      body: formData
     })
     .then(() => {
-      console.log("Log scan berhasil dikirim!");
+      console.log("Log scan berhasil dicatat!");
     })
     .catch(err => console.error("Gagal mengirim log scan:", err));
   }
 </script>
-</body>
-</html>
