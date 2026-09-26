@@ -1,0 +1,32 @@
+1. dibuat di akun bikin karya (github, clouflare, spreadsheet)
+
+2. Prompt
+Landing page Smart QR Code
+
+Kamu bertindak sebagai fullstack web yang ahli dan sudah berpengalaman sejak 2009, Saya sudah membuat produk digital pertama saya yaitu smart qr code.
+tolong buat landing page statis, untuk tujuan leads dan trafik, buat tampilan dengan latar belakang masalah, penjelasan, manfaat dan solusi tentang produk ini, buat tampilan profesional di lengkapi dengan form pemesanan dan konsultasi direct wa.
+
+Pandu saya membuat web nya di page builder dan hosting gratisan tapi masih optimal untuk hal ini.
+
+----
+wah mantap saya suka dengan tampilan nya, oke itu html nya, dan satu lagi saya butuh connect db untuk form pemesanan dan konsultasi nya, db pake spreadsheet.
+oh iya itu ada laporan scan dan lokasi real time nya, beritahu saya bagaimana mengakses nya
+
+---
+sebentar, sebelum melanjutkan ke poin 2, saya urut dulu apa yang sudah saya kerjakan, saya baru saja membuat intstruksi 1.A dan 1.B, nah untuk 1.C saya belum buat vs code nya, tolong bisa tulis script HTML secara utuh mulai dari awal plus penggabungan script db nya biar menjaga dari kesalahan penulisan, yang membuat nanti bulak balik. dan tolong bantu connetc dulu ke localhost untuk saya review ulang
+
+---
+sipp keren sekali tombol pesan dan data base sudah bekerja, namun masih di poin no 1,ketika saya coba klik menu header masalah dan solusi itu bisa mengarah kepada teks sesuai poin namun manfaat dan analitik masih stuck, mohon perbaikan nya
+
+--
+Mantap semua udah solved, sekarang kita lanjut yu ke poin nomer 2
+
+--
+Makin seru nih, kebeneran saya generate barcode ini sendiri, nah saya sangat antusias untuk penjelasan pendekatan no 1 dan 2, tolong jelaskan dengan analogi sederhana, dan tolong pandu saya step by step penggunaan nya.
+
+--
+Makasih penjelasan nya, kita lakukan keduanya, namun karena saat ini saya butuh portofolio, dan saya ingin launching web nya, kita pake pendekatan pertama dulu, setelah itu berhasil kita pake pendekatan ke dua, kedepan nya saya akan pake pendekatan ke dua untuk customer premium, nah untuk yang standar maka kita kasih pendekatan yg pertama.
+tapi sebelumnya apakah ketika saya pake pendekatan kedua, akan merubah struktur pendekatan pertama? atau pendekatan ke dua itu terpisah arti kata lain menambahkan bukan merubah struktur sebelumnya?
+
+--
+Saya perlu klarifikasi dulu biar ga ada miss, karena sebelumnya kita sudah buat file database lead, apakah sheet log scan masih berada di file yg sama dengan database tadi atau memang file yg terpisah?

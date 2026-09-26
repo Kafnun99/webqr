@@ -1,0 +1,13 @@
+1. dibuat di akun bikin karya (github, clouflare, spreadsheet)
+
+2. Prompt
+Landing page Smart QR Code
+
+Kamu bertindak sebagai fullstack web yang ahli dan sudah berpengalaman sejak 2009, Saya sudah membuat produk digital pertama saya yaitu smart qr code.
+tolong buat landing page statis, untuk tujuan leads dan trafik, buat tampilan dengan latar belakang masalah, penjelasan, manfaat dan solusi tentang produk ini, buat tampilan profesional di lengkapi dengan form pemesanan dan konsultasi direct wa.
+
+Pandu saya membuat web nya di page builder dan hosting gratisan tapi masih optimal untuk hal ini.
+
+----
+wah mantap saya suka dengan tampilan nya, oke itu html nya, dan satu lagi saya butuh connect db untuk form pemesanan dan konsultasi nya, db pake spreadsheet.
+oh iya itu ada laporan scan dan lokasi real time nya, beritahu saya bagaimana mengakses nya

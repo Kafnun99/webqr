@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengarahkan...</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .loader {
+            border: 3px solid #1e293b;
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="loader"></div>
+        <p>Mengarahkan Anda ke tujuan...</p>
+    </div>
+
+    <script>
+    // 1. Ambil Parameter 'id' dari URL (Contoh: A000001)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qrId = urlParams.get('id') || 'UNKNOWN';
+
+    // 2. URL Apps Script Log Scan Anda (Ganti dengan URL Deployment Apps Script Anda)
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzt5YebnDebPGdS9iGHkzKpaSuaHuMfIeA1arEXKzxLeoQ3WSbknXLQsoXHPfp_xh00cQ/exec";
+
+    // 3. Fallback URL jika ID tidak ditemukan / Belum Diaktivasi
+    let destinationUrl = "https://webqr-anda.vercel.app"; 
+    // 4. Deteksi Tipe Perangkat
+    const ua = navigator.userAgent;
+    const device = /iPhone|iPad|iPod/i.test(ua) ? "iOS" : (/Android/i.test(ua) ? "Android" : "Desktop");
+
+    // 5. Tangkap Lokasi via GeoIP (ipapi.co) & Kirim Log
+    fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(geo => {
+            const payload = {
+                waktu: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+                qr_id: qrId,
+                kota: geo.city || "Tidak Terdeteksi",
+                perangkat: device,
+                ip: geo.ip || ""
+            };
+
+            // Kirim data scan ke Google Sheets Log Scan (Akun B) secara asynchronous
+            return fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        })
+        .catch(err => console.error("Error logging scan:", err))
+        .finally(() => {
+            // 6. Redirect Pengunjung ke URL Tujuan Klien
+            // (Catatan: Untuk MVP, destinationUrl bisa diarahkan sesuai logika aktivasi Anda)
+            window.location.href = destinationUrl;
+        });
+    </script>
+</body>
+</html>
