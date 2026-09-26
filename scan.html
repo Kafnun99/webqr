@@ -41,11 +41,11 @@
       // 1. URL Apps Script Log Scan
       const SCRIPT_LOG_SCAN = "https://script.google.com/macros/s/AKfycbwbhh5YZZd7bl1vBRc7JP-iOPaCFzLztcJa9uG76p4FT3w0H4Xd_DB5gpYfUwyMehhXqw/exec"; 
 
-      // 2. URL Apps Script DB QR Maps (Untuk cek status & link lokasi toko)
-      const SCRIPT_DB_QR = "https://script.google.com/macros/s/AKfycbyM3lEjniD3O_XI8pC2uDtN1MYiCyNm39ARbp99rwkKKQ7N9G_4qGxiUZpZNygNfJFU/exec"; // Ganti dengan Web App URL dari appscript db qr Anda!
+      // 2. URL Apps Script DB QR Maps
+      const SCRIPT_DB_QR = "https://script.google.com/macros/s/AKfycbymM3lEjniD30_XI8pC2uDtN1MYiCyNm39ARbp99rwkKKQ7N9G_4qGxiUZpZNygM3fJFU/exec";
 
       if (qrId) {
-        // A. Kirim Log Scan secara asynchronous (Background)
+        // A. Kirim Log Scan (Background - no-cors agar tidak terhalang)
         const formData = new URLSearchParams();
         formData.append('waktu', new Date().toLocaleString('id-ID'));
         formData.append('qr_id', qrId);
@@ -60,21 +60,31 @@
           body: formData
         }).catch(err => console.error("Gagal log scan:", err));
 
-        // B. Cek Status Kartu ke Database QR Maps untuk Pengalihan
-        fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`)
+        // B. Cek Status DB QR dengan Timeout 3 Detik
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // Jika 3 detik tidak ada respon, lempar ke activate
+
+        fetch(`${SCRIPT_DB_QR}?card_id=${qrId}`, { signal: controller.signal })
           .then(res => res.json())
           .then(data => {
-            if (data.status === 'success' && data.card_status === 'active' && data.no_hp) {
-              // Kartu Aktif -> Alihkan ke Google Maps / Tujuan Toko
-              window.location.href = data.no_hp; // Atau sesuaikan dengan kolom link lokasi toko Anda
+            clearTimeout(timeoutId);
+            console.log("Response DB QR:", data);
+
+            // Cek semua kemungkinan properti URL tujuan
+            const targetUrl = data.gmaps_url || data.nama_toko || data.link || data.no_hp || data.url;
+
+            // Jika status terdeteksi aktif/terdaftar dan URL tujuan valid
+            const isCardActive = data.card_status === 'active' || data.status === 'active' || data.status === 'TERDAFTAR / AKTIF';
+
+            if (isCardActive && targetUrl && targetUrl.startsWith('http')) {
+              window.location.href = targetUrl;
             } else {
-              // Kartu Inactive / Belum Diaktifkan -> Alihkan ke halaman Aktivasi
-              window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`; 
+              window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
             }
           })
           .catch(err => {
-            console.error("Error cek DB QR:", err);
-            // Fallback jika API bermasalah: Arahkan ke Halaman Aktivasi
+            console.error("Fetch DB QR error / timeout:", err);
+            // Jika error/timeout, alihkan langsung ke halaman aktivasi agar tidak blank
             window.location.href = `https://qr-maps.vercel.app/activate.html?id=${qrId}`;
           });
       } else {
