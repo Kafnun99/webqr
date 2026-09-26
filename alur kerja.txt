@@ -12,3 +12,8 @@
 
 
 https://lookerstudio.google.com/reporting/XXXXX?params={"qr_id":"QR-MAPS-001"}
+
+bug  kredential, ketika vs code minta akses ke githb terus dikarenakan ada dua akun
+git:[https://github.com](https://github.com)
+
+GitHub - [https://api.github.com/](https://api.github.com/)...
