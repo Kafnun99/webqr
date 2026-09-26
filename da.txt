@@ -141,3 +141,16 @@ kendala sekarang
 --
 Semua udah solved, tinggal penyimpanan data scan aja yang belum berhasil
 scan.html sudah saya buat sesuai instruksi terakhhir
+--
+
+Iya setelah saya coba paste ini http://127.0.0.1:5500/scan.html?id=A000008 di bar, hasil di db scan muncul, dan terekap.
+
+Namun sebelum saya melanjutkan untuk update di generate_card.js ada yg mau saya pahami dulu..
+1. https://webqr-bikinkarya.vercel.app/scan.html?id=${cardId} ini url diambil dari mana? soalnya kalo url vercel yg webQR itu adalah ini:
+https://smart-qr-code-iota.vercel.app/ 
+kalo benar berarti penulisan lengkap nya apakah seperti ini ?
+https://smart-qr-code-iota.vercel.app/scan.html?id=${cardId}
+
+2. Ketika diganti dengan itu apakah barcode harus di generate ulang?
+3. saya sertakan script lengkap generate_card.js terbaru
+
