@@ -5,43 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mengarahkan...</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #ffffff; margin: 0; }
-    .loader { text-align: center; color: #555; }
-    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; width: 32px; height: 32px; animation: spin 0.6s linear infinite; margin: 0 auto 10px; }
+    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #fff; }
+    .loader { text-align: center; color: #444; }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; width: 28px; height: 28px; animation: spin 0.6s linear infinite; margin: 0 auto 10px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div class="loader">
     <div class="spinner"></div>
-    <p style="font-size: 14px;">Memuat halaman...</p>
+    <p style="font-size: 14px;">Mengarahkan ke Google Maps...</p>
   </div>
 
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbwL1g3RLGss0zdKhbzWRB7PS80UtLB0mAnlr0uhLll5Jy1eJNo8yyQZnId-SksTgKpC/exec';
 
+    // Ambil ID dari URL (misal: ?id=A000001 atau path /c/A000001)
     const urlParams = new URLSearchParams(window.location.search);
     const cardId = urlParams.get('id') || window.location.pathname.split('/').pop() || 'A000001';
 
-    async function processScan() {
+    async function redirectFast() {
       try {
-        const res = await fetch(`${GAS_URL}?card_id=${cardId}`);
-        const data = await res.json();
+        const response = await fetch(`${GAS_URL}?card_id=${cardId}`);
+        const data = await response.json();
 
-        // JIKA AKTIF: Langsung buka URL Tujuan (Google Maps/Review)
-        if (data.card_status === 'active' && data.nama_toko && String(data.nama_toko).startsWith('http')) {
+        // JIKA KARTU AKTIF -> LANGSUNG REDIRECT KE GOOGLE MAPS
+        if (data.card_status === 'active' && data.nama_toko && data.nama_toko.startsWith('http')) {
           window.location.replace(data.nama_toko);
         } else {
-          // JIKA KOSONG / UNACTIVE: Buka Halaman Aktivasi
+          // JIKA KOSONG / UNACTIVE -> LEMPAR KE FORM AKTIVASI
           window.location.replace(`https://qr-maps.vercel.app/activate.html?id=${cardId}`);
         }
       } catch (err) {
-        // Fallback jika terjadi error koneksi
+        // Fallback jika ada gangguan koneksi
         window.location.replace(`https://qr-maps.vercel.app/activate.html?id=${cardId}`);
       }
     }
 
-    processScan();
+    redirectFast();
   </script>
 </body>
 </html>
