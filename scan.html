@@ -2,49 +2,38 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mengarahkan...</title>
-  <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #ffffff; }
-    .loader { text-align: center; color: #333; }
-    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; width: 32px; height: 32px; animation: spin 0.6s linear infinite; margin: 0 auto 10px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  </style>
+  <script>
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardId = urlParams.get('id') || urlParams.get('card_id');
+
+      if (!cardId) {
+        document.body.innerHTML = "<h3>ID QR Code tidak valid.</h3>";
+        return;
+      }
+
+      // 1. Ambil data analitik pengakses (HP, Browser, IP)
+      const userAgent = navigator.userAgent;
+      
+      // 2. Kirim Log Scan secara Asinkron (fire-and-forget) agar TIDAK MEMBEBANI alur utama
+      fetch('URL_https://script.google.com/macros/s/AKfycbwk5_QHmeUcTHyZ-oq64i9xPE9xa_xj2YTwBn4ItRNKI3qVU1AhqBU6EJKyQBfM5jMSOw/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          card_id: cardId,
+          user_agent: userAgent,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(err => console.log('Log background error:', err));
+
+      // 3. SEKETIKA ITU JUGA oper proses pengecekan status & URL ke qr-maps (Satu Pintu)
+      window.location.replace(`https://qr-maps.vercel.app/r/${cardId}`);
+    })();
+  </script>
 </head>
 <body>
-  <div class="loader">
-    <div class="spinner"></div>
-    <p style="font-size: 14px;">Memuat halaman...</p>
-  </div>
-
-  <script>
-    // URL Web App Google Apps Script dari DB QR Maps (Akun 1)
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwL1g3RLGss0zdKhbzWRB7PS80UtLB0mAnlr0uhLll5Jy1eJNo8yyQZnId-SksTgKpC/exec'
-    // Domain Form Aktivasi Akun 1
-    const ACTIVATION_URL = 'https://qr-maps.vercel.app/activate.html';
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const cardId = urlParams.get('id') || window.location.pathname.split('/').pop() || 'A000001';
-
-    async function processScan() {
-      try {
-        const res = await fetch(`${GAS_URL}?card_id=${cardId}`);
-        const data = await res.json();
-
-        // 1. JIKA KARTU AKTIF: Langsung lempar ke URL Google Maps / Review
-        if (data.card_status === 'active' && data.nama_toko && String(data.nama_toko).startsWith('http')) {
-          window.location.replace(data.nama_toko);
-        } else {
-          // 2. JIKA KOSONG / UNACTIVE: Lempar ke Form Aktivasi di Akun 1 (qr-maps.vercel.app)
-          window.location.replace(`${ACTIVATION_URL}?id=${cardId}`);
-        }
-      } catch (err) {
-        // Fallback jika terjadi kesalahan koneksi: Lempar ke Form Aktivasi di Akun 1
-        window.location.replace(`${ACTIVATION_URL}?id=${cardId}`);
-      }
-    }
-
-    processScan();
-  </script>
+  <p>Sedang menghubungkan ke lokasi...</p>
 </body>
 </html>
