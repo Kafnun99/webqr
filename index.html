@@ -79,34 +79,32 @@
                     </div>
                 </div>
 
-               <!-- Preview Card -->
-<!-- Preview Card -->
-<div class="relative lg:ml-auto w-full max-w-md">
-    <div class="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800 glow-effect relative overflow-hidden">
-        <div class="flex items-center justify-between pb-6 border-b border-slate-800/80">
-            <div class="flex items-center gap-3">
-                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
-            </div>
-            <span class="text-xs text-slate-400 font-mono">Live Demo (Rotasi 5 Menit)</span>
-        </div>
-        <div class="py-8 flex flex-col items-center justify-center text-center">
-            <div class="p-4 bg-white rounded-2xl shadow-2xl mb-6 relative group">
-                <!-- ID diubah menjadi qrDemoNewsImg untuk mengunci URL barcode -->
-                <img id="qrDemoNewsImg" 
-                     src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://smart-qr-code-iota.vercel.app/scan.html?id=NEWS5M&color=0f172a" 
-                     alt="Smart QR Code NEWS5M" 
-                     class="w-44 h-44 rounded-lg">
-                <div class="absolute inset-0 bg-indigo-600/90 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm cursor-pointer">
-                    <span class="text-white text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/80">Scan & Uji Coba</span>
+                <!-- Preview Card Barcode Demo -->
+                <div class="relative lg:ml-auto w-full max-w-md">
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800 glow-effect relative overflow-hidden">
+                        <div class="flex items-center justify-between pb-6 border-b border-slate-800/80">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <span class="text-xs text-slate-400 font-mono">Live Demo (Rotasi 5 Menit)</span>
+                        </div>
+                        <div class="py-8 flex flex-col items-center justify-center text-center">
+                            <div class="p-4 bg-white rounded-2xl shadow-2xl mb-6 relative group">
+                                <img id="qrDemoNewsImg" 
+                                     src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://smart-qr-code-iota.vercel.app/scan.html?id=NEWS5M&color=0f172a" 
+                                     alt="Smart QR Code NEWS5M" 
+                                     class="w-44 h-44 rounded-lg">
+                                <div class="absolute inset-0 bg-indigo-600/90 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm cursor-pointer">
+                                    <span class="text-white text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/80">Scan & Uji Coba</span>
+                                </div>
+                            </div>
+                            <h3 class="text-white font-bold text-lg mb-1">Dynamic News QR Code</h3>
+                            <p class="text-xs text-slate-400 max-w-xs">Scan QR ini! Artikel berita teknologi, bisnis, dan hiburan akan otomatis berganti setiap 5 menit tanpa mengubah bentuk QR.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <h3 class="text-white font-bold text-lg mb-1">Dynamic News QR Code</h3>
-            <p class="text-xs text-slate-400 max-w-xs">Scan QR ini! Artikel berita teknologi, bisnis, dan hiburan akan otomatis berganti setiap 5 menit tanpa mengubah bentuk QR.</p>
-        </div>
-    </div>
-</div>
             </div>
         </div>
     </section>
@@ -264,7 +262,7 @@
         </div>
     </section>
 
-    <!-- SECTION 5: Form Pemesanan & Konsultasi Direct WA + DB Google Sheets -->
+    <!-- SECTION 5: Form Pemesanan & Konsultasi -->
     <section id="form-pemesanan" class="py-20 bg-slate-900/80 border-t border-slate-800 scroll-mt-20">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -328,16 +326,11 @@
 
     <!-- Script Pengiriman Form ke Google Sheets & Direct WA -->
     <script>
-        // =========================================================================
-        // 1. MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI:
+        // 1. URL Apps Script Database Leads Smart
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZDrVyLA8q4ky-Fg0qq64njfIvVWt8FshOBtCTtL9wQApdqiJgOy4mJytap3NdvUuc/exec"; 
         
-        // 2. MASUKKAN NOMOR WHATSAPP UTAMA ANDA DI BAWAH INI (Gunakan awalan 62):
-        const NOMOR_WA_TUJUAN = "6285353664560"; // Ganti dengan nomor WA asli Anda!
-        // =========================================================================
-
-        // Otomatis perbarui link QR Preview di Hero Section
-        document.getElementById('qrPreviewImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://wa.me/${NOMOR_WA_TUJUAN}&color=0f172a`;
+        // 2. NOMOR WHATSAPP TUJUAN
+        const NOMOR_WA_TUJUAN = "6285353664560";
 
         document.getElementById('leadForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -365,14 +358,12 @@
                 body: new URLSearchParams(data)
             })
             .then(() => {
-                // Buat pesan rapi untuk WhatsApp
                 const textWA = `Halo, saya *${data.nama}* dari *${data.bisnis}*.\n\n` +
                                `*Kebutuhan:* ${data.kebutuhan}\n` +
                                `*No. WA:* ${data.whatsapp}\n` +
                                `*Pesan:* ${data.pesan}\n\n` +
                                `Saya berminat dengan Smart QR Code dan ingin konsultasi lebih lanjut.`;
                 
-                // Buka WhatsApp di tab baru
                 window.open(`https://wa.me/${NOMOR_WA_TUJUAN}?text=${encodeURIComponent(textWA)}`, '_blank');
                 
                 submitBtn.disabled = false;
@@ -381,8 +372,6 @@
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("Terjadi masalah jaringan, namun Anda tetap akan diarahkan ke WhatsApp.");
-                
                 const textWA = `Halo, saya *${data.nama}* dari *${data.bisnis}*. Saya ingin konsultasi Smart QR Code.`;
                 window.open(`https://wa.me/${NOMOR_WA_TUJUAN}?text=${encodeURIComponent(textWA)}`, '_blank');
                 
