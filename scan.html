@@ -29,7 +29,7 @@
       }).catch(err => console.log('Log background error:', err));
 
       // 3. SEKETIKA ITU JUGA oper proses pengecekan status & URL ke qr-maps (Satu Pintu)
-      window.location.replace(`https://qr-maps.vercel.app/r/${cardId}`);
+window.location.replace(`https://qr-maps.vercel.app/api/r?id=${cardId}`);
     })();
   </script>
 </head>
